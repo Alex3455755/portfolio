@@ -1,0 +1,6 @@
+{
+  "name": "Seasonal Portfolio",
+  "description": "An interactive Google Chrome-styled developer portfolio with canvas-based season atmospheric particle systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
