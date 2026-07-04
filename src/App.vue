@@ -478,7 +478,7 @@ const projects: Project[] = [
     <section 
       id="winter-section"
       ref="winterSection"
-      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
+      class="relative min-h-screen py-24 lg:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
       <!-- Giant Parallax Background Text -->
       <div 
@@ -507,7 +507,7 @@ const projects: Project[] = [
     <section 
       id="spring-section"
       ref="springSection"
-      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
+      class="relative min-h-screen py-24 lg:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
       <!-- Giant Parallax Background Text -->
       <div 
@@ -539,7 +539,7 @@ const projects: Project[] = [
     <section 
       id="summer-section"
       ref="summerSection"
-      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
+      class="relative min-h-screen py-24 lg:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
       <!-- Giant Parallax Background Text -->
       <div 
@@ -568,7 +568,7 @@ const projects: Project[] = [
     <section 
       id="autumn-section"
       ref="autumnSection"
-      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
+      class="relative min-h-screen py-24 lg:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
       <!-- Giant Parallax Background Text -->
       <div 

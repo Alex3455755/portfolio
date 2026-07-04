@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { Project, SeasonType } from '../types';
 import { 
   Globe, ArrowRight, RefreshCw, Lock, CheckCircle, 
@@ -15,6 +15,22 @@ const props = defineProps<{
 
 const activeTab = ref(0);
 const isRefreshing = ref(false);
+const isLargeScreen = ref(false);
+
+const updateScreenSize = () => {
+  isLargeScreen.value = typeof window !== 'undefined' && window.innerWidth >= 1024;
+};
+
+onMounted(() => {
+  updateScreenSize();
+  window.addEventListener('resize', updateScreenSize);
+});
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', updateScreenSize);
+  }
+});
 
 // Interactive states for Winter (SkiFlow)
 const winterLifts = ref([
@@ -96,7 +112,7 @@ const handleScanLedger = () => {
 </script>
 
 <template>
-  <div :id="`project-showcase-${project.id}`" class="w-full flex flex-col lg:flex-row gap-8 items-stretch">
+  <div :id="`project-showcase-${project.id}`" class="w-full flex flex-col lg:flex-row gap-12 lg:gap-16 items-stretch">
     <!-- LEFT: Project Text Details -->
     <div class="w-full lg:w-5/12 flex flex-col justify-center space-y-6">
       <div class="space-y-3">
@@ -174,7 +190,7 @@ const handleScanLedger = () => {
     <div 
       class="w-full lg:w-7/12 flex flex-col" 
       :id="`chrome-browser-frame-${project.id}`"
-      :style="scrollY !== undefined ? { 
+      :style="isLargeScreen && scrollY !== undefined ? { 
         transform: `translateY(${(scrollY - (season === 'winter' ? 650 : season === 'spring' ? 1450 : season === 'summer' ? 2250 : 3050)) * -0.05}px)`
       } : {}"
     >
