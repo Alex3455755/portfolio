@@ -42,9 +42,11 @@
   animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Smooth Scrolling */
+/* Smooth Scrolling & Snap-scrolling */
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 80px; /* offset for the sticky header */
 }
 
 /* Hide scrollbar utility */

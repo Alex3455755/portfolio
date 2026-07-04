@@ -10,6 +10,7 @@ import {
 const props = defineProps<{
   project: Project;
   season: SeasonType;
+  scrollY?: number;
 }>();
 
 const activeTab = ref(0);
@@ -169,8 +170,14 @@ const handleScanLedger = () => {
       </div>
     </div>
 
-    <!-- RIGHT: Chrome Browser Showcase Frame -->
-    <div class="w-full lg:w-7/12 flex flex-col" :id="`chrome-browser-frame-${project.id}`">
+    <!-- RIGHT: Chrome Browser Showcase Frame (foreground card drifts faster for depth) -->
+    <div 
+      class="w-full lg:w-7/12 flex flex-col" 
+      :id="`chrome-browser-frame-${project.id}`"
+      :style="scrollY !== undefined ? { 
+        transform: `translateY(${(scrollY - (season === 'winter' ? 650 : season === 'spring' ? 1450 : season === 'summer' ? 2250 : 3050)) * -0.05}px)`
+      } : {}"
+    >
       <div class="w-full bg-slate-100 border border-slate-200 rounded-xl shadow-xl flex flex-col flex-1 overflow-hidden transition-all duration-500 hover:shadow-2xl">
         <!-- Chrome Top Bar -->
         <div class="px-4 py-3 bg-slate-200 border-b border-slate-300 flex items-center gap-4 select-none">

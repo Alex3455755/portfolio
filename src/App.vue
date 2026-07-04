@@ -5,11 +5,13 @@ import Header from './components/Header.vue';
 import ResumeDrawer from './components/ResumeDrawer.vue';
 import SeasonParticles from './components/SeasonParticles.vue';
 import ProjectShowcase from './components/ProjectShowcase.vue';
+import SkillsBowl from './components/SkillsBowl.vue';
 import { 
   CheckCircle, ChevronDown, Settings, Sliders, Gauge, Shield, Terminal, Cpu, Copy, Check, Github 
 } from 'lucide-vue-next';
 
 const activeSeason = ref<SeasonType>('winter');
+const scrollY = ref(0);
 const isResumeOpen = ref(false);
 const showConfigPanel = ref(false);
 
@@ -25,6 +27,10 @@ const npmInstallCmd = 'npm install --save-dev gh-pages';
 const scriptsJsonCode = '"predeploy": "npm run build",\n"deploy": "gh-pages -d dist"';
 const npmDeployCmd = 'npm run deploy';
 
+const npmInstallCmd_val = 'npm install --save-dev gh-pages';
+const scriptsJsonCode_val = '"predeploy": "npm run build",\n"deploy": "gh-pages -d dist"';
+const npmDeployCmd_val = 'npm run deploy';
+
 // Section Element Refs
 const winterSection = ref<HTMLElement | null>(null);
 const springSection = ref<HTMLElement | null>(null);
@@ -38,7 +44,17 @@ const sectionRefs: Record<SeasonType, any> = {
   autumn: autumnSection
 };
 
+let ticking = false;
+
 const handleScroll = () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      scrollY.value = window.scrollY;
+      ticking = false;
+    });
+    ticking = true;
+  }
+
   const scrollPosition = window.scrollY + window.innerHeight / 2;
 
   const winterTop = winterSection.value?.offsetTop || 0;
@@ -73,7 +89,8 @@ const scrollToSeason = (season: SeasonType) => {
 };
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
+  scrollY.value = window.scrollY;
+  window.addEventListener('scroll', handleScroll, { passive: true });
 });
 
 onUnmounted(() => {
@@ -342,15 +359,70 @@ const projects: Project[] = [
     </div>
 
     <!-- HERO / LANDING SCREEN -->
-    <section id="hero-landing" class="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto flex flex-col items-center justify-center text-center space-y-10 z-20">
-      <div class="flex flex-col items-center space-y-4">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 border border-slate-200 rounded-full text-xs text-slate-600 font-mono font-semibold" id="top-badge">
-          <CheckCircle class="w-3.5 h-3.5 text-emerald-500" />
+    <section id="hero-landing" class="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center justify-center text-center space-y-12 z-20 overflow-hidden min-h-screen snap-start">
+      <!-- Background giant blurry ambient blob with parallax translation -->
+      <div 
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[45rem] h-[45rem] rounded-full blur-[140px] pointer-events-none select-none -z-10 transition-colors duration-1000"
+        :class="{
+          'bg-sky-400/10': activeSeason === 'winter',
+          'bg-emerald-400/10': activeSeason === 'spring',
+          'bg-amber-400/10': activeSeason === 'summer',
+          'bg-orange-400/10': activeSeason === 'autumn'
+        }"
+        :style="{ transform: `translate(-50%, calc(-50% + ${scrollY * 0.12}px))` }"
+      />
+
+      <!-- Floating Parallax Vector Element 1: Winter Snowflake -->
+      <div 
+        class="absolute left-[6%] top-[12%] w-14 h-14 text-sky-400/20 pointer-events-none select-none hidden sm:block"
+        :style="{ transform: `translateY(${scrollY * -0.16}px) rotate(${scrollY * 0.04}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" class="w-full h-full">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19M12 5l3 3M12 19l-3-3M5 12l3 3M19 12l-3-3" />
+        </svg>
+      </div>
+
+      <!-- Floating Parallax Vector Element 2: Summer Sunburst -->
+      <div 
+        class="absolute right-[8%] top-[18%] w-18 h-18 text-amber-500/20 pointer-events-none select-none hidden sm:block"
+        :style="{ transform: `translateY(${scrollY * -0.24}px) rotate(${scrollY * -0.02}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" class="w-full h-full">
+          <circle cx="12" cy="12" r="4" />
+          <path stroke-linecap="round" d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.78l2.12-2.12M16.95 7.05l2.12-2.12" />
+        </svg>
+      </div>
+
+      <!-- Floating Parallax Vector Element 3: Spring Blossom Leaf -->
+      <div 
+        class="absolute left-[10%] bottom-[20%] w-16 h-16 text-emerald-500/20 pointer-events-none select-none hidden sm:block"
+        :style="{ transform: `translateY(${scrollY * 0.08}px) rotate(${scrollY * 0.06}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" class="w-full h-full">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c0 4.5-3.5 8-8 8a8 8 0 0 0 8 8c0-4.5 3.5-8 8-8a8 8 0 0 0-8-8z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 11c1-1 3-1 4 0s0 3-1 4-3 1-4 0" />
+        </svg>
+      </div>
+
+      <!-- Floating Parallax Vector Element 4: Autumn Maple Leaf -->
+      <div 
+        class="absolute right-[12%] bottom-[15%] w-14 h-14 text-orange-500/20 pointer-events-none select-none hidden sm:block"
+        :style="{ transform: `translateY(${scrollY * 0.14}px) rotate(${scrollY * -0.05}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" class="w-full h-full">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 22v-5M12 17l-3-2M12 15l3-2M12 13l-4-4M12 11l4-4M12 17c-2-3-5-2-7-4 2-1 4-1 5 1m2-1c2-3 5-2 7-4-2-1-4-1-5 1" />
+        </svg>
+      </div>
+
+      <!-- Foreground Interactive Header & Title Layer (staggered slightly slower) -->
+      <div class="flex flex-col items-center space-y-6 max-w-4xl" :style="{ transform: `translateY(${scrollY * 0.08}px)` }">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 border border-slate-200/80 rounded-full text-xs text-slate-600 font-mono font-bold shadow-xs select-none" id="top-badge">
+          <CheckCircle class="w-3.5 h-3.5 text-emerald-500 shrink-0" />
           Оптимизировано для GitHub Pages (Vue.js)
         </div>
 
-        <h1 class="text-5xl sm:text-6xl md:text-7xl font-display font-extrabold tracking-tight text-slate-950 max-w-4xl leading-tight">
-          Один сайт. <br />
+        <h1 class="text-5xl sm:text-6xl md:text-7.5xl font-display font-extrabold tracking-tight text-slate-950 max-w-4xl leading-tight select-none">
+          Один сайт. <br class="hidden sm:inline" />
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-emerald-500 via-amber-400 to-orange-500">
             Четыре времени года.
           </span>
@@ -361,9 +433,13 @@ const projects: Project[] = [
         </p>
       </div>
 
-      <!-- Personalized Interactive Greeting Form -->
-      <div class="w-full max-w-md bg-white p-5 rounded-2xl border border-slate-200/80 shadow-md space-y-3" id="greeting-box">
-        <p class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">
+      <!-- Personalized Interactive Greeting Form (staggered speed 2) -->
+      <div 
+        class="w-full max-w-md bg-white p-5 rounded-2xl border border-slate-200/80 shadow-md space-y-3 z-30" 
+        id="greeting-box"
+        :style="{ transform: `translateY(${scrollY * 0.04}px)` }"
+      >
+        <p class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest select-none">
           Персонализация опыта / Interactive
         </p>
         <div class="text-sm font-semibold text-slate-800">
@@ -386,7 +462,8 @@ const projects: Project[] = [
         </form>
       </div>
 
-      <div class="pt-6 animate-bounce">
+      <!-- Scroll Indicator Button (staggered speed 3) -->
+      <div class="pt-6 animate-bounce" :style="{ transform: `translateY(${scrollY * 0.02}px)` }">
         <button 
           @click="scrollToSeason('winter')" 
           class="flex flex-col items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-700 cursor-pointer transition-colors"
@@ -401,44 +478,123 @@ const projects: Project[] = [
     <section 
       id="winter-section"
       ref="winterSection"
-      class="relative min-h-[90vh] py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20"
+      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
+      <!-- Giant Parallax Background Text -->
+      <div 
+        class="absolute left-[-5%] top-[15%] text-[14rem] sm:text-[18rem] md:text-[24rem] font-display font-black text-sky-400/[0.04] select-none pointer-events-none tracking-tighter uppercase leading-none z-0"
+        :style="{ transform: `translateY(${(scrollY - 600) * 0.14}px)` }"
+      >
+        Winter
+      </div>
+
+      <!-- Floating Parallax Rotating Snowflake -->
+      <div 
+        class="absolute right-[10%] top-[15%] w-28 h-28 text-sky-400/[0.08] pointer-events-none select-none z-0 hidden sm:block"
+        :style="{ transform: `translateY(${(scrollY - 600) * -0.15}px) rotate(${(scrollY - 600) * 0.05}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="w-full h-full">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19" />
+          <path stroke-linecap="round" d="M12 6l3 3M12 18l-3-3M6 12l3 3M18 12l-3-3M12 4l-3 3M12 20l3-3M4 12l3-3M20 12l-3 3" />
+        </svg>
+      </div>
+
       <SeasonParticles season="winter" :intensity="particleIntensity" :wind-speed="windSpeed" />
-      <ProjectShowcase :project="projects[0]" season="winter" />
+      <ProjectShowcase :project="projects[0]" season="winter" :scroll-y="scrollY" />
     </section>
 
     <!-- SPRING SECTION -->
     <section 
       id="spring-section"
       ref="springSection"
-      class="relative min-h-[90vh] py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20"
+      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
+      <!-- Giant Parallax Background Text -->
+      <div 
+        class="absolute right-[-5%] top-[20%] text-[14rem] sm:text-[18rem] md:text-[24rem] font-display font-black text-emerald-500/[0.04] select-none pointer-events-none tracking-tighter uppercase leading-none z-0"
+        :style="{ transform: `translateY(${(scrollY - 1400) * 0.16}px)` }"
+      >
+        Spring
+      </div>
+
+      <!-- Floating Parallax Rotating Flower Blossom -->
+      <div 
+        class="absolute left-[8%] top-[20%] w-32 h-32 text-emerald-500/[0.08] pointer-events-none select-none z-0 hidden sm:block"
+        :style="{ transform: `translateY(${(scrollY - 1400) * -0.18}px) rotate(${(scrollY - 1400) * -0.04}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="w-full h-full">
+          <circle cx="12" cy="12" r="2.5" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2c1.2 2.5-1.5 4.5-1.5 5.5s.8 2 1.5 2c.7 0 1.5-1 1.5-2s-2.7-3-1.5-5.5z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 22c-1.2-2.5 1.5-4.5 1.5-5.5s-.8-2-1.5-2c-.7 0-1.5 1-1.5 2s2.7 3 1.5 5.5z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2 12c2.5 1.2 4.5-1.5 5.5-1.5s2 .8 2 1.5c0 .7-1 1.5-2 1.5s-3-2.7-5.5-1.5z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M22 12c-2.5-1.2-4.5 1.5-5.5 1.5s-2-.8-2-1.5c0-.7 1-1.5 2-1.5s3 2.7 5.5 1.5z" />
+        </svg>
+      </div>
+
       <SeasonParticles season="spring" :intensity="particleIntensity" :wind-speed="windSpeed" />
-      <ProjectShowcase :project="projects[1]" season="spring" />
+      <ProjectShowcase :project="projects[1]" season="spring" :scroll-y="scrollY" />
     </section>
 
     <!-- SUMMER SECTION -->
     <section 
       id="summer-section"
       ref="summerSection"
-      class="relative min-h-[90vh] py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20"
+      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
+      <!-- Giant Parallax Background Text -->
+      <div 
+        class="absolute left-[-5%] top-[15%] text-[14rem] sm:text-[18rem] md:text-[24rem] font-display font-black text-amber-500/[0.04] select-none pointer-events-none tracking-tighter uppercase leading-none z-0"
+        :style="{ transform: `translateY(${(scrollY - 2200) * 0.12}px)` }"
+      >
+        Summer
+      </div>
+
+      <!-- Floating Parallax Rotating Sun -->
+      <div 
+        class="absolute right-[12%] top-[12%] w-36 h-36 text-amber-500/[0.08] pointer-events-none select-none z-0 hidden sm:block"
+        :style="{ transform: `translateY(${(scrollY - 2200) * -0.14}px) rotate(${(scrollY - 2200) * 0.03}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="w-full h-full">
+          <circle cx="12" cy="12" r="4.5" />
+          <path stroke-linecap="round" d="M12 1v1.5M12 21.5v1.5M3.5 12h1.5M19 12h1.5M5.3 5.3l1.1 1.1M17.6 17.6l1.1 1.1M5.3 18.7l1.1-1.1M17.6 6.4l1.1-1.1" />
+        </svg>
+      </div>
+
       <SeasonParticles season="summer" :intensity="particleIntensity" :wind-speed="windSpeed" />
-      <ProjectShowcase :project="projects[2]" season="summer" />
+      <ProjectShowcase :project="projects[2]" season="summer" :scroll-y="scrollY" />
     </section>
 
     <!-- AUTUMN SECTION -->
     <section 
       id="autumn-section"
       ref="autumnSection"
-      class="relative min-h-[90vh] py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20"
+      class="relative min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/50 flex flex-col justify-center overflow-hidden z-20 snap-start"
     >
+      <!-- Giant Parallax Background Text -->
+      <div 
+        class="absolute right-[-5%] top-[20%] text-[14rem] sm:text-[18rem] md:text-[24rem] font-display font-black text-orange-500/[0.04] select-none pointer-events-none tracking-tighter uppercase leading-none z-0"
+        :style="{ transform: `translateY(${(scrollY - 3000) * 0.15}px)` }"
+      >
+        Autumn
+      </div>
+
+      <!-- Floating Parallax Rotating Autumn Leaf -->
+      <div 
+        class="absolute left-[10%] top-[25%] w-32 h-32 text-orange-500/[0.08] pointer-events-none select-none z-0 hidden sm:block"
+        :style="{ transform: `translateY(${(scrollY - 3000) * -0.16}px) rotate(${(scrollY - 3000) * -0.05}deg)` }"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="w-full h-full">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 22V14M12 14c2-3.5 4-3.5 6-1.5C17 9 14.5 8 12 14M12 14c-2-3.5-4-3.5-6-1.5C7 9 9.5 8 12 14" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 11.5l-2.5-2M12 9l2.5-2" />
+        </svg>
+      </div>
+
       <SeasonParticles season="autumn" :intensity="particleIntensity" :wind-speed="windSpeed" />
-      <ProjectShowcase :project="projects[3]" season="autumn" />
+      <ProjectShowcase :project="projects[3]" season="autumn" :scroll-y="scrollY" />
     </section>
 
     <!-- TECH STANDARDS -->
-    <section id="tech-standards" class="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/60 z-20">
+    <section id="tech-standards" class="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/60 z-20 min-h-screen flex flex-col justify-center snap-start">
       <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
         <span class="text-[10px] font-bold font-mono text-slate-400 uppercase tracking-widest block">
           КАЧЕСТВО И СТАНДАРТЫ / Core Values
@@ -511,98 +667,14 @@ const projects: Project[] = [
       </div>
     </section>
 
-    <!-- GITHUB PAGES DEPLOY GUIDE -->
-    <section id="deploy-guide" class="relative py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto z-20">
-      <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-slate-800 text-indigo-400 flex items-center justify-center font-mono font-bold">
-            GP
-          </div>
-          <div>
-            <h3 class="text-lg font-bold text-white">Инструкция по публикации на GitHub Pages</h3>
-            <p class="text-xs text-slate-400">Как выложить этот сайт портфолио в ваш открытый репозиторий за 3 шага.</p>
-          </div>
-        </div>
+    <!-- GITHUB PAGES DEPLOY GUIDE & FOOTER (UNIFIED SCROLL SNAP SCREEN) -->
+    <div id="deploy-and-footer" class="relative min-h-screen flex flex-col justify-between snap-start z-20 border-t border-slate-200/50 bg-slate-50/20">
+      <section id="skills-sandbox" class="relative py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full flex-1 flex flex-col justify-center">
+        <SkillsBowl />
+      </section>
 
-        <div class="space-y-4">
-          <!-- Step 1 -->
-          <div class="space-y-2">
-            <div class="flex items-center gap-2 text-xs font-semibold text-indigo-300">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-[10px]">1</span>
-              Установите пакет gh-pages
-            </div>
-            <p class="text-xs text-slate-400 leading-normal pl-7">
-              Добавьте специальный пакет в devDependencies вашего проекта для автоматического деплоя билда в ветку <code class="bg-slate-800 px-1 py-0.5 rounded text-indigo-200">gh-pages</code>.
-            </p>
-            <div class="ml-7 bg-slate-950 p-3 rounded-lg border border-slate-800 flex items-center justify-between font-mono text-xs text-indigo-200 select-all">
-              <span>npm install --save-dev gh-pages</span>
-              <button 
-                @click="copyToClipboard(npmInstallCmd, 'npm-install')"
-                class="p-1 hover:bg-slate-800 rounded cursor-pointer text-slate-500 hover:text-white"
-                title="Copy command"
-              >
-                <Check v-if="copiedCommand === 'npm-install'" class="w-4 h-4 text-emerald-500" />
-                <Copy v-else class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <!-- Step 2 -->
-          <div class="space-y-2">
-            <div class="flex items-center gap-2 text-xs font-semibold text-indigo-300">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-[10px]">2</span>
-              Добавьте скрипты развертывания в package.json
-            </div>
-            <p class="text-xs text-slate-400 leading-normal pl-7">
-              Добавьте скрипты <code class="bg-slate-800 px-1 py-0.5 rounded text-indigo-200">predeploy</code> и <code class="bg-slate-800 px-1 py-0.5 rounded text-indigo-200">deploy</code> в блок <code class="bg-slate-800 px-1 py-0.5 rounded text-indigo-200">"scripts"</code>. Также укажите поле <code class="bg-slate-800 px-1 py-0.5 rounded text-indigo-200">"homepage": "https://username.github.io/repo-name"</code>.
-            </p>
-            <div class="ml-7 bg-slate-950 p-3 rounded-lg border border-slate-800 flex items-center justify-between font-mono text-xs text-indigo-200 select-all">
-              <pre class="text-[10px] leading-relaxed">
-"predeploy": "npm run build",
-"deploy": "gh-pages -d dist"</pre>
-              <button 
-                @click="copyToClipboard(scriptsJsonCode, 'scripts-json')"
-                class="p-1 hover:bg-slate-800 rounded cursor-pointer text-slate-500 hover:text-white"
-                title="Copy JSON"
-              >
-                <Check v-if="copiedCommand === 'scripts-json'" class="w-4 h-4 text-emerald-500" />
-                <Copy v-else class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <!-- Step 3 -->
-          <div class="space-y-2">
-            <div class="flex items-center gap-2 text-xs font-semibold text-indigo-300">
-              <span class="w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-300 flex items-center justify-center text-[10px]">3</span>
-              Запустите команду деплоя
-            </div>
-            <p class="text-xs text-slate-400 leading-normal pl-7">
-              Запустите терминальную команду. Пакет скомпилирует приложение в папку <code class="bg-slate-800 px-1 py-0.5 rounded text-indigo-200">dist</code> и автоматически запушит файлы на ваш GitHub Pages!
-            </p>
-            <div class="ml-7 bg-slate-950 p-3 rounded-lg border border-slate-800 flex items-center justify-between font-mono text-xs text-indigo-200 select-all">
-              <span>npm run deploy</span>
-              <button 
-                @click="copyToClipboard(npmDeployCmd, 'run-deploy')"
-                class="p-1 hover:bg-slate-800 rounded cursor-pointer text-slate-500 hover:text-white"
-                title="Copy command"
-              >
-                <Check v-if="copiedCommand === 'run-deploy'" class="w-4 h-4 text-emerald-500" />
-                <Copy v-else class="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <span>💡 Подсказка: В этой Vue.js версии параметр base настроен на автоматическое относительное разрешение путей (<code class="bg-slate-800 px-1 rounded text-slate-300">./</code>)! Деплойте без изменений!</span>
-          <span class="text-indigo-400 font-bold">Успешного деплоя! 🚀</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-slate-100 border-t border-slate-200 text-slate-500 py-12 px-4 sm:px-6 lg:px-8 z-20 relative">
+      <!-- FOOTER -->
+      <footer class="bg-slate-100 border-t border-slate-200 text-slate-500 py-10 px-4 sm:px-6 lg:px-8 relative w-full">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-2.5">
           <div class="w-6 h-6">
@@ -635,6 +707,7 @@ const projects: Project[] = [
           © 2026 Alexei Gyll. Designed in Google Chrome Style. Built with Vue 3 & Tailwind.
         </p>
       </div>
-    </footer>
+      </footer>
+    </div>
   </div>
 </template>
